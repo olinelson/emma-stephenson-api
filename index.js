@@ -28,6 +28,7 @@ app.post('/stripe_events', bodyParser.raw({ type: 'application/json' }), async (
       var emailData = {
         from: 'Piano With Miss Emma <pianowithmissemma@gmail.com>',
         to: email,
+        subject: 'Access to PDFs',
         template: 'gained_access',
         'v:customerName': name
       }
