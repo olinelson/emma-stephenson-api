@@ -16,7 +16,8 @@ app.get('/ping', (req, res) => {
 app.post('/customer_created', async (req, res) => {
   try {
     console.log(req.headers)
-    const { email, name } = req.body.object
+    const { email, name } = req.body.data.object
+    console.log(req.body)
 
     const emailData = {
       from: 'Piano With Miss Emma <pianowithmissemma@gmail.com>',
