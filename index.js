@@ -30,7 +30,7 @@ app.post('/stripe_events', bodyParser.raw({ type: 'application/json' }), async (
         to: email,
         subject: 'Access to PDFs',
         template: 'gained_access',
-        'v:customerName': name
+        'v:name': name
       }
 
       await mailgun.messages().send(emailData)
