@@ -23,7 +23,7 @@ app.post('/stripe_events', bodyParser.raw({ type: 'application/json' }), async (
   // Handle the event
   switch (event.type) {
     case 'customer.created':
-      var { email, name } = req.body.data.object
+      var { email, name } = event.data.object
 
       var emailData = {
         from: 'Piano With Miss Emma <pianowithmissemma@gmail.com>',
