@@ -6,7 +6,8 @@
   "dependencies": {
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "mailgun-js": "^0.22.0"
+    "mailgun-js": "^0.22.0",
+    "stripe": "^8.38.0"
   },
   "scripts": {
     "dev": "nodemon index.js",
