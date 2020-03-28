@@ -34,7 +34,6 @@ app.post('/stripe_events', bodyParser.raw({ type: 'application/json' }), async (
       }
 
       await mailgun.messages().send(emailData)
-      res.status(200).send()
 
       break
     default:
