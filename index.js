@@ -7,13 +7,7 @@ const stripe = require('stripe')(process.env.STRIPE_API_KEY)
 const endpointSecret = process.env.STRIPE_SIGNING_SECRET
 const bodyParser = require('body-parser')
 
-app.use(express.json())
-
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
-
-app.get('/ping', (req, res) => {
-  res.status(200).send({ pong: true })
-})
 
 app.post('/stripe_events', bodyParser.raw({ type: 'application/json' }), async (req, res) => {
   const sig = req.headers['stripe-signature']
