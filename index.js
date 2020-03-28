@@ -5,6 +5,12 @@ const port = 3000
 
 const mailgun = require('mailgun-js')({ apiKey: process.env.MAIL_GUN_API_KEY, domain: process.env.MAIL_GUN_DOMAIN })
 
+app.use(express.json())
+
+app.get('/ping', (req, res) => {
+  res.status(200).send({ pong: true })
+})
+
 app.post('/customer_created', async (req, res) => {
   try {
     const { email, name } = req.body.data[0]
