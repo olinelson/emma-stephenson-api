@@ -42,6 +42,5 @@ app.post('/stripe_events', bodyParser.raw({ type: 'application/json' }), async (
   }
 
   // Return a res to acknowledge receipt of the event
-  // token
   res.json({ received: true })
 })
