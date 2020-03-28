@@ -44,8 +44,9 @@ app.post('/customer_created', async (req, res) => {
     }
 
     await mailgun.messages().send(emailData)
-  } catch (error) {
     res.status(200).send()
+  } catch (error) {
+    res.status(500).send()
   }
 })
 app.get('/test', async (req, res) => {
