@@ -7,6 +7,39 @@ const stripe = require('stripe')(process.env.STRIPE_API_KEY)
 const endpointSecret = process.env.STRIPE_SIGNING_SECRET
 const bodyParser = require('body-parser')
 
+const sendPurchaseNotificationToSeller = async (event) => {
+  const emailData = {
+    from: 'Piano With Miss Emma <pianowithmissemma@gmail.com>',
+    to: 'emmagrace91@gmail.com',
+    subject: 'You Have A New Order!',
+    template: 'new_order',
+    'v:owner_name': 'Emma',
+    'v:company_name': 'Piano With Miss Emma',
+    'v:customer_name': event.billing_details.name,
+    'v:customer_email': event.billing_details.email,
+    'v:amount': event.amount,
+    'v:currency': event.currency,
+    'v:receipt_url': event.receipt_url,
+    'v:stripe_dashboard_link': 'https://dashboard.stripe.com/'
+
+  }
+  await mailgun.messages().send(emailData)
+}
+
+const sendGainedAccessEmailToCustomer = async (event) => {
+  var { email, name } = event.data.object
+
+  const emailData = {
+    from: 'Piano With Miss Emma <pianowithmissemma@gmail.com>',
+    to: email,
+    subject: 'Access to PDFs',
+    template: 'gained_access',
+    'v:name': name
+  }
+
+  await mailgun.messages().send(emailData)
+}
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 app.post('/stripe_events', bodyParser.raw({ type: 'application/json' }), async (req, res) => {
@@ -23,21 +56,13 @@ app.post('/stripe_events', bodyParser.raw({ type: 'application/json' }), async (
   // Handle the event
   switch (event.type) {
     case 'customer.created':
-      var { email, name } = event.data.object
-
-      var emailData = {
-        from: 'Piano With Miss Emma <pianowithmissemma@gmail.com>',
-        to: email,
-        subject: 'Access to PDFs',
-        template: 'gained_access',
-        'v:name': name
-      }
-
-      await mailgun.messages().send(emailData)
-
+      sendGainedAccessEmailToCustomer(event)
+      break
+    case 'charge.succeeded':
+      await sendPurchaseNotificationToSeller(event)
       break
     default:
-      return res.status(400).end()
+      return res.status(400).send()
   }
 
   // Return a res to acknowledge receipt of the event
