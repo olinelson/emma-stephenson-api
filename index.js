@@ -20,7 +20,7 @@ const sendCheckoutNotificationToSeller = async (event) => {
     'v:company_name': 'Piano With Miss Emma',
     'v:customer_name': billing_details.name,
     'v:customer_email': billing_details.email,
-    'v:amount': amount,
+    'v:amount': amount / 100,
     'v:currency': currency,
     'v:receipt_url': receipt_url,
     'v:stripe_dashboard_link': 'https://dashboard.stripe.com/'
