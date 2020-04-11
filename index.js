@@ -7,7 +7,10 @@ const stripe = require('stripe')(process.env.STRIPE_API_KEY)
 const endpointSecret = process.env.STRIPE_SIGNING_SECRET
 const bodyParser = require('body-parser')
 
-const sendPurchaseNotificationToSeller = async (event) => {
+const sendCheckoutNotificationToSeller = async (event) => {
+  const data = event.data.object
+  const { amount, billing_details, currency, receipt_url } = data
+
   const emailData = {
     from: 'Piano With Miss Emma <pianowithmissemma@gmail.com>',
     to: 'emmagrace91@gmail.com',
@@ -15,11 +18,11 @@ const sendPurchaseNotificationToSeller = async (event) => {
     template: 'new_order',
     'v:owner_name': 'Emma',
     'v:company_name': 'Piano With Miss Emma',
-    'v:customer_name': event.billing_details.name,
-    'v:customer_email': event.billing_details.email,
-    'v:amount': event.amount,
-    'v:currency': event.currency,
-    'v:receipt_url': event.receipt_url,
+    'v:customer_name': billing_details.name,
+    'v:customer_email': billing_details.email,
+    'v:amount': amount,
+    'v:currency': currency,
+    'v:receipt_url': receipt_url,
     'v:stripe_dashboard_link': 'https://dashboard.stripe.com/'
 
   }
@@ -58,8 +61,9 @@ app.post('/stripe_events', bodyParser.raw({ type: 'application/json' }), async (
     case 'customer.created':
       sendGainedAccessEmailToCustomer(event)
       break
+
     case 'charge.succeeded':
-      await sendPurchaseNotificationToSeller(event)
+      await sendCheckoutNotificationToSeller(event)
       break
     default:
       return res.status(400).send()
